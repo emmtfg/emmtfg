@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Redirecting to /mtfg/...</title>
+  <script>
+    async function redirectToLatestMtfg() {
+      try {
+        const res = await fetch("https://a.4cdn.org/lgbt/catalog.json");
+        const catalog = await res.json();
+
+        for (const page of catalog) {
+          for (const thread of page.threads) {
+            const sub = (thread.sub || "").toLowerCase();
+            const com = (thread.com || "").toLowerCase();
+
+            if (sub.includes("mtfg") || sub.includes("male to female") ||
+                com.includes("mtfg") || com.includes("male to female")) {
+              const url = `https://boards.4chan.org/lgbt/thread/${thread.no}`;
+              window.location.href = url;
+              return;
+            }
+          }
+        }
+
+        document.body.innerHTML = "⚠️ No /mtfg/ thread found.";
+      } catch (e) {
+        document.body.innerHTML = "❌ Error fetching thread.";
+        console.error(e);
+      }
+    }
+
+    redirectToLatestMtfg();
+  </script>
+</head>
+<body>
+</body>
+</html>
