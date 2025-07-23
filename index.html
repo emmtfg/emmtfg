@@ -3,30 +3,32 @@
 <head>
   <meta charset="UTF-8">
   <title>Redirecting to /mtfg/...</title>
+  <meta http-equiv="refresh" content="600"> <!-- Auto-refresh every 10 minutes -->
   <script>
     async function redirectToLatestMtfg() {
       try {
-        const res = await fetch("https://corsproxy.io/?https://a.4cdn.org/lgbt/catalog.json");
-        const catalog = await res.json();
+        const proxyUrl = "https://corsproxy.io/?https://a.4cdn.org/lgbt/catalog.json";
+        const response = await fetch(proxyUrl);
+        const catalog = await response.json();
 
         for (const page of catalog) {
           for (const thread of page.threads) {
-            const sub = (thread.sub || "").toLowerCase();
-            const com = (thread.com || "").toLowerCase();
+            const title = (thread.sub || "").toLowerCase();
+            const comment = (thread.com || "").toLowerCase();
 
-            if (sub.includes("mtfg") || sub.includes("male to female") ||
-                com.includes("mtfg") || com.includes("male to female")) {
-              const url = `https://boards.4chan.org/lgbt/thread/${thread.no}`;
-              window.location.href = url;
+            if (title.includes("mtfg") || title.includes("male to female") ||
+                comment.includes("mtfg") || comment.includes("male to female")) {
+              window.location.href = `https://boards.4chan.org/lgbt/thread/${thread.no}`;
               return;
             }
           }
         }
 
-        document.body.innerHTML = "⚠️ No /mtfg/ thread found.";
-      } catch (e) {
-        document.body.innerHTML = "❌ Error fetching thread.";
-        console.error(e);
+        // If no thread found
+        document.body.innerHTML = "⚠️ No /mtfg/ thread found right now.";
+      } catch (error) {
+        console.error("Fetch error:", error);
+        document.body.innerHTML = "❌ Could not fetch /mtfg/ thread.";
       }
     }
 
@@ -36,3 +38,4 @@
 <body>
 </body>
 </html>
+
