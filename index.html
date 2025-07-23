@@ -3,32 +3,40 @@
 <head>
   <meta charset="UTF-8">
   <title>Redirecting to /mtfg/...</title>
-  <meta http-equiv="refresh" content="600"> <!-- Auto-refresh every 10 minutes -->
+  <meta http-equiv="refresh" content="600"> 
   <script>
     async function redirectToLatestMtfg() {
+      const apiUrl = "https://a.4cdn.org/lgbt/catalog.json";
+      const proxyUrl = "https://api.allorigins.win/get?url=" + encodeURIComponent(apiUrl);
+
       try {
-        const proxyUrl = "https://corsproxy.io/?https://a.4cdn.org/lgbt/catalog.json";
         const response = await fetch(proxyUrl);
-        const catalog = await response.json();
+        if (!response.ok) throw new Error("Network response not OK");
 
-        for (const page of catalog) {
-          for (const thread of page.threads) {
-            const title = (thread.sub || "").toLowerCase();
-            const comment = (thread.com || "").toLowerCase();
+        const data = await response.json();
+        const catalog = JSON.parse(data.contents); 
 
-            if (title.includes("mtfg") || title.includes("male to female") ||
-                comment.includes("mtfg") || comment.includes("male to female")) {
-              window.location.href = `https://boards.4chan.org/lgbt/thread/${thread.no}`;
+        // Loop through all pages and threads
+        for (let i = 0; i < catalog.length; i++) {
+          const threads = catalog[i].threads;
+          for (let j = 0; j < threads.length; j++) {
+            const thread = threads[j];
+            const sub = (thread.sub || "").toLowerCase();
+            const com = (thread.com || "").toLowerCase();
+
+            if (sub.includes("mtfg") || sub.includes("male to female") ||
+                com.includes("mtfg") || com.includes("male to female")) {
+              const url = `https://boards.4chan.org/lgbt/thread/${thread.no}`;
+              window.location.href = url;
               return;
             }
           }
         }
 
-        // If no thread found
-        document.body.innerHTML = "⚠️ No /mtfg/ thread found right now.";
-      } catch (error) {
-        console.error("Fetch error:", error);
-        document.body.innerHTML = "❌ Could not fetch /mtfg/ thread.";
+        document.body.innerHTML = "No matching /mtfg/ thread found.";
+      } catch (err) {
+        document.body.innerHTML = "Error fetching thread:<br><pre>" + err + "</pre>";
+        console.error("Thread fetch failed:", err);
       }
     }
 
@@ -38,4 +46,3 @@
 <body>
 </body>
 </html>
-
