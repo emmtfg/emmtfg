@@ -6,7 +6,7 @@
   <script>
     async function redirectToLatestMtfg() {
       try {
-        const res = await fetch("https://a.4cdn.org/lgbt/catalog.json");
+        const res = await fetch("https://corsproxy.io/?https://a.4cdn.org/lgbt/catalog.json");
         const catalog = await res.json();
 
         for (const page of catalog) {
