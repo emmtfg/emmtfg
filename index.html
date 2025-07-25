@@ -1,48 +1,10 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="UTF-8">
-  <title>Redirecting to /mtfg/...</title>
-  <meta http-equiv="refresh" content="600"> 
-  <script>
-    async function redirectToLatestMtfg() {
-      const apiUrl = "https://a.4cdn.org/lgbt/catalog.json";
-      const proxyUrl = "https://api.allorigins.win/get?url=" + encodeURIComponent(apiUrl);
-
-      try {
-        const response = await fetch(proxyUrl);
-        if (!response.ok) throw new Error("Network response not OK");
-
-        const data = await response.json();
-        const catalog = JSON.parse(data.contents); 
-
-        // Loop through all pages and threads
-        for (let i = 0; i < catalog.length; i++) {
-          const threads = catalog[i].threads;
-          for (let j = 0; j < threads.length; j++) {
-            const thread = threads[j];
-            const sub = (thread.sub || "").toLowerCase();
-            const com = (thread.com || "").toLowerCase();
-
-            if (sub.includes("mtfg") || sub.includes("male to female") ||
-                com.includes("mtfg") || com.includes("male to female")) {
-              const url = `https://boards.4chan.org/lgbt/thread/${thread.no}`;
-              window.location.href = url;
-              return;
-            }
-          }
-        }
-
-        document.body.innerHTML = "No matching /mtfg/ thread found.";
-      } catch (err) {
-        document.body.innerHTML = "Error fetching thread:<br><pre>" + err + "</pre>";
-        console.error("Thread fetch failed:", err);
-      }
-    }
-
-    redirectToLatestMtfg();
-  </script>
-</head>
-<body>
-</body>
+  <head>
+    <meta charset="UTF-8">
+    <title>Hello World</title>
+  </head>
+  <body>
+    <h1>It works!</h1>
+  </body>
 </html>
